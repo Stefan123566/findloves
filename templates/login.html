@@ -12,9 +12,6 @@
 <link rel="stylesheet" href="/static/css/jdlogin.css" />
 <link rel="stylesheet" href="/static/css/style.css" />
 <link href="/static/css/oe_varpop.css" rel="stylesheet" />
-<script type='text/javascript'>
-var _ROOT_PATH = "index.html";
-</script>
 <script type='text/javascript' src='/static/js/jquery.min.js'></script>
 <script type='text/javascript' src='/static/js/public.js'></script>
 <script type="text/javascript" src='/static/js/artdialog/jquery.artDialog.sourcebb79.js'></script>
@@ -22,14 +19,21 @@ var _ROOT_PATH = "index.html";
 <script type='text/javascript' src='/static/js/artbox.js'></script>
 <script type='text/javascript' src='/static/js/ajax.js'></script>
 <script type='text/javascript' src='/static/js/ajax.extend.js'></script>
-<script type="text/javascript" src='/static/js/WdatePicker.js'></script>
 <script type="text/javascript" src="/static/js/jquery.slide.js"></script>
 <script type="text/javascript" src="/static/js/jquery.slideui.js"></script>
 <script type="text/javascript" src="/static/js/oe_varpop.js"></script>
 <script type="text/javascript" src="/static/js/jquery.SuperSlide.2.1.1.js"></script>
 <script type="text/javascript" src="/static/js/search.js"></script>
+<script type="text/javascript" src="/static/js/jquery-1.11.3.js"></script>
+<script type='text/javascript'>
+var _ROOT_PATH = "index.html";
+</script>
+
+
+
 </head>
 <body>
+{% csrf_token %}
 <div class="nav0">
 <div class="oe_top">
   <div class="oe_topcon">
@@ -89,12 +93,12 @@ var _ROOT_PATH = "index.html";
             <label>密码</label>
             <input type="password" name="password" id="password" class="w1" />
           </li>
-          <li class="ma">
-            <label>验证码</label>
-            <input type="text" id="checkcode" name="checkcode" class="w2" />
-			<img id="codeimg" src="source/include/imagecodeddee.png?act=verifycode" align="middle" />
-		    <a href="javascript:refreshCode();"> 换一张</a>
-          </li>
+          <!--<li class="ma">-->
+            <!--<label>验证码</label>-->
+            <!--<input type="text" id="checkcode" name="checkcode" class="w2" />-->
+			<!--<img id="codeimg" src="source/include/imagecodeddee.png?act=verifycode" align="middle" />-->
+		    <!--<a href="javascript:refreshCode();"> 换一张</a>-->
+          <!--</li>-->
           <li class="btn">
             <a href="javascript:;">
 			  <button id="but_login">登 录</button>
@@ -146,6 +150,7 @@ var _ROOT_PATH = "index.html";
 </script>
 
 <script language="javascript">
+
 $(function(){
 
 	$("#loginname").bind("click", function(){ //帐号
@@ -155,14 +160,12 @@ $(function(){
 		}
 	});
 
-	$("#codeimg").bind("click", function(){ //验证码
-		$(this).attr("src", "source/include/imagecode4001.png?act=verifycode&amp;"+Math.random());
-	});
+
 
 	$("#but_login").bind("click", function(){ //注册
 		$_loginname = $("#loginname").val();
 		$_password = $("#password").val();
-		$_checkcode = "";
+
 
 		if ($_loginname == "" || $_loginname == "用户名/邮箱") {
 			alert("请填写登录帐号");
@@ -172,54 +175,36 @@ $(function(){
 			alert("请填写登录密码");
 			return false;
 		}
-				$_checkcode = $("#checkcode").val();
-		if ($_checkcode.length == 0) {
-			alert("请填写验证码");
-			return false;
-		}
-				
-		$forward = "index.html";
-		if ($forward.length == 0) {
-			$forward = "index.html";
-		}
+		$forward = "../login";
 		$.ajax({
-			type: "POST",
-			url: _ROOT_PATH+"index.php?c=passport",
-			cache: false,
-			data: {a:"loginpost", loginname:$_loginname, password:$_password, checkcode:$_checkcode, forward:$forward, fromhalt:"ajax", r:get_rndnum(8)},
-			dataType: "json",
-			success: function($data) {
-				$json = eval($data);
-				$response = $json.response;
-				$result = $json.result;
-				if ($response == "1") {
-					window.location.href = $forward;
+              type: "POST",
+			  url:"/collate/",
+              async:false,
+              data: {loginname:$_loginname, password:$_password},
+              dataType: "json",
+              success:function (resText) {
+                        alert(resText);
+                        if (resText == "0") {
+					    window.location.href = $forward;
 				}
-				else if ($response == "2") {
-					window.top.location.href = $result;
+				        else if (resText== "1") {
+					window.top.location.href ="../index";
 				}
-				else {
-					if ($result.length > 0) {
-						alert($result);
-					}
-					else {
-						alert("登录失败，请检查帐号和密码");
-					}
-				}
-			},
-			error: function() {
-				alert("登录失败，请检查帐号和密码");
-			}
-		});
+
+              },
+              error:function () {
+                        alert("登录失败，请检查帐号和密码");
+              }
+
+        });
+
+
 
 	});
 
 });
-    function refreshCode(){
-        $("#codeimg").attr("src", "source/include/imagecode4001.png?act=verifycode&amp;"+Math.random());
-    }
+
 </script>
 </body>
 
-<!-- Mirrored from www.xiangqin5.com/index.php?c=passport&a=login by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 18 Jul 2019 14:55:05 GMT -->
 </html>
