@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^case/$',views.case),
     url(r'^safety/$',views.safety),
     url(r'^collate/$',views.CollateLogin.as_view(),name="collate"),
+
 ]

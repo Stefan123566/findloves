@@ -105,6 +105,9 @@ var _ROOT_PATH = "index.html";
             </a>
             <a class="a_2" href="indexa72f.html?c=passport&amp;a=forget">忘记密码</a>
           </li>
+          <li><input type="checkbox" value="1" name="remember" id="id_remember">
+            <label for="id_remember">记住账号</label>
+          </li>
           <li class="other">
             						<a href="https://graph.qq.com/oauth2.0/authorize?response_type=code&amp;client_id=后台填写&amp;redirect_uri=http%3A%2F%2Fwww.xiangqin5.com%2Findex.php%3Fc%3Dconnect%26a%3Dcallback%26mod%3Dqq&amp;scope=get_user_info&amp;state=737b126a3098551998d52c4ab49139ab"><img src="/static/images/qq.gif" />QQ登录</a>  &nbsp;&nbsp;
 						<a href="https://api.weibo.com/oauth2/authorize?client_id=%E5%90%8E%E5%8F%B0%E5%A1%AB%E5%86%99&amp;redirect_uri=http%3A%2F%2Fwww.xiangqin5.com%2Findex.php%3Fc%3Dconnect%26a%3Dcallback%26mod%3Dsina&amp;response_type=code"><img src="/static/images/sina.gif" />新浪微博登录</a>  &nbsp;&nbsp;
@@ -151,6 +154,9 @@ var _ROOT_PATH = "index.html";
 
 <script language="javascript">
 
+
+
+
 $(function(){
 
 	$("#loginname").bind("click", function(){ //帐号
@@ -159,7 +165,7 @@ $(function(){
 			$(this).val("");
 		}
 	});
-
+    $.ajax({})
 
 
 	$("#but_login").bind("click", function(){ //注册
@@ -176,19 +182,24 @@ $(function(){
 			return false;
 		}
 		$forward = "../login";
+		$remember=$("#id_remember").val();
+		console.log($remember);
 		$.ajax({
               type: "POST",
 			  url:"/collate/",
               async:false,
-              data: {loginname:$_loginname, password:$_password},
+              data: {loginname:$_loginname, password:$_password,remember:$remember},
               dataType: "json",
               success:function (resText) {
-                        alert(resText);
-                        if (resText == "0") {
+                        //var result=JSON,parse(resText);
+                        alert(resText.resp);
+                        if (resText.resp =='0') {
 					    window.location.href = $forward;
 				}
-				        else if (resText== "1") {
-					window.top.location.href ="../index";
+				        else if (resText.resp=='1') {
+
+					window.top.location.href ="../index?"+resText.name;
+
 				}
 
               },
